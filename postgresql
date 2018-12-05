@@ -12,6 +12,9 @@ host    all             all              0.0.0.0/0             md5
 nvim /etc/postgresql/9.5/main/postgresql.conf
 listen_addresses = '*'
 
+systemctl restart postgresql
+
+
 ######### connect remote
 psql -h hostname -U admin -d dbname
 
