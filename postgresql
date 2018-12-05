@@ -1,5 +1,19 @@
 su - postgres
-createdb mydb
+createdb dbname
 psql
-CREATE USER admin WITH PASSWORD 'myPassword';
-GRANT ALL PRIVILEGES ON DATABASE mydb to admin;
+CREATE USER admin WITH PASSWORD 'password';
+GRANT ALL PRIVILEGES ON DATABASE dbname to admin;
+
+
+########## remote access
+nvim /etc/postgresql/9.5/main/pg_hba.conf
+host    all             all              0.0.0.0/0             md5
+
+nvim /etc/postgresql/9.5/main/postgresql.conf
+listen_addresses = '*'
+
+######### connect remote
+psql -h hostname -U admin -d dbname
+
+##### export
+psql dbname > dbname.sql
