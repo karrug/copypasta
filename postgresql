@@ -1,0 +1,5 @@
+su - postgres
+createdb mydb
+psql
+CREATE USER admin WITH PASSWORD 'myPassword';
+GRANT ALL PRIVILEGES ON DATABASE mydb to admin;
