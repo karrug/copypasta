@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# before deploying, install required libs
+# install same qt version, install xkb, xineram, freetype
 
 set -x
 
