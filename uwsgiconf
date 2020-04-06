@@ -1,0 +1,15 @@
+[uwsgi]
+
+chdir           = /home/ubuntu/example/backend
+module          = example.wsgi
+virtualenv      = /home/ubuntu/example/env
+master          = true
+enable-threads  = true
+socket          = /home/ubuntu/example/example.sock
+chmod-socket    = 666
+vacuum          = true
+max-requests    = 1000
+lazy-apps       = true
+processes       = 4
+plugins         = python3
+

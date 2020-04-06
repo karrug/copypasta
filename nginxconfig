@@ -1,0 +1,37 @@
+upstream backend {
+    server unix:///home/ubuntu/example/example.sock;
+}
+
+
+server {
+    listen       80;
+    server_name  example.com;
+    return       302 https://$host$request_uri;
+}
+
+server {
+    listen       443 ssl;
+    server_name  example.com;
+    charset     utf-8;
+    client_max_body_size 75M;
+
+    ssl_certificate /etc/letsencrypt/live/example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
+
+
+    location /static {
+        alias /home/ubuntu/example/backend/static;
+        expires 365d;
+    }
+
+    location /media {
+        alias /home/ubuntu/example/backend/media;
+        expires 365d;
+    }
+
+    location / {
+        uwsgi_pass  backend;
+        include     uwsgi_params;
+    }
+}
+

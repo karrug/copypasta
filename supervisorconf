@@ -1,0 +1,10 @@
+[program:django]
+redirect_stderr=true
+stdout_logfile = /var/log/supervisor/django.log
+logfile_maxbytes = 5MB
+logfile_backups = 10
+environment=DJANGO_ENVIRONMENT=live,XXXX=vvvv
+stopsignal=QUIT
+stopasgroup=true
+command = /usr/bin/uwsgi_python3 --ini /ggg/example/backend/uwsgi
+directory=/ggg/example/backend
