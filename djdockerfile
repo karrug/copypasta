@@ -1,0 +1,49 @@
+FROM ubuntu:18.04
+
+
+ARG APPDIR=/root/rfanalytics
+
+RUN set -ex \
+    && RUN_DEPS=" \
+    libpcre3 \
+    mime-support \
+    postgresql-client \
+    libgnutls28-dev \
+    libcurl4-gnutls-dev \
+    libexpat-dev \
+    libpython3.6 \
+    " \
+    && seq 1 8 | xargs -I{} mkdir -p /usr/share/man/man{} \
+    && apt-get update -y && apt-get install -y --no-install-recommends $RUN_DEPS \
+    && rm -rf /var/lib/apt/lists/*
+
+
+RUN mkdir ${APPDIR}
+WORKDIR ${APPDIR}
+ADD . ${APPDIR}
+
+RUN set -ex \
+    && BUILD_DEPS=" \
+    build-essential \
+    libpcre3-dev \
+    libpq-dev \
+    python3-pip \
+    gcc \
+    python3-dev \
+    " \
+    && apt-get update && apt-get install -y --no-install-recommends $BUILD_DEPS \
+    && pip3 install setuptools \
+    && pip3 install --no-cache-dir -r ${APPDIR}/requirements.txt \
+    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $BUILD_DEPS \
+    && rm -rf /var/lib/apt/lists/*
+
+# uwsgi configuration
+ENV UWSGI_WSGI_FILE=rfanalytics/wsgi.py
+ENV UWSGI_HTTP=:8000 UWSGI_MASTER=1 UWSGI_HTTP_AUTO_CHUNKED=1 UWSGI_HTTP_KEEPALIVE=1 UWSGI_LAZY_APPS=1 UWSGI_WSGI_ENV_BEHAVIOR=holy
+# ENV UWSGI_ROUTE_HOST="^(?!localhost:8000$) break:400"
+
+# env vars
+ENV DJANGO_ENVIRONMENT=live
+
+EXPOSE 8000
+CMD ["uwsgi", "--show-config"]
