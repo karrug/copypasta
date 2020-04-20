@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
 
         system(argv[1]);
 
-        message = "HTTP/1.1 200 OK\r\n";
+        message = "HTTP/1.1 200 OK\r\n\r\n";
         send(connectfd, message , strlen(message), 0);
 
         if (shutdown(connectfd, SHUT_RDWR) == -1) {
