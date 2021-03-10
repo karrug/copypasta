@@ -1,0 +1,11 @@
+def run(cmd):
+    p = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    while True:
+        output = p.stdout.readline()
+        if p.poll() is not None:
+            break
+        if output:
+            print(output.decode().strip())
+    rc = p.poll()
+    if rc != 0:
+        raise subprocess.CalledProcessError
