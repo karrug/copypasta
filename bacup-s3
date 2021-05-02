@@ -1,0 +1,34 @@
+# backup.sh file
+#!/bin/sh
+
+
+# cleanup files older than 24hrs
+/var/lib/postgresql/env/bin/aws s3api put-bucket-lifecycle-configuration --bucket bucketname --lifecycle-configuration file://lifecycle.json
+
+# backup every hr
+while true;
+do
+  n=`date +%s`; bf=rf${n}.sql
+  pg_dump bucketname > $bf &&
+  /var/lib/postgresql/env/bin/aws s3 cp $bf s3://bucketname-hourly-db-backup/ &&
+  rm $bf &&
+  echo "backed up: $bf"
+  sleep 3600
+done
+
+
+# lifecycle.json file
+{
+    "Rules": [
+        {
+            "Filter": {
+                "Prefix": "backup/hourly/"
+            },
+            "Status": "Enabled",
+            "Expiration": {
+                "Days": 1
+            },
+            "ID": "expire-1day"
+        }
+    ]
+}
