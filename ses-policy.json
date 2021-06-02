@@ -9,10 +9,13 @@
                 "ses:SendRawEmail",
                 "ses:SendBulkTemplatedEmail"
             ],
-            "Resource": "arn:aws:ses:ap-south-1:1111111111:identity/hello@example.com",
+            "Resource": [
+                "arn:aws:ses:ap-south-1:123123123123:identity/example.com.com",
+                "arn:aws:ses:ap-south-1:123123123123:identity/hello@example.com.com"
+            ],
             "Condition": {
                 "StringEquals": {
-                    "ses:FromAddress": "hello@example.com"
+                    "ses:FromAddress": "hello@example.com.com"
                 }
             }
         },
@@ -23,7 +26,7 @@
             "Resource": "*",
             "Condition": {
                 "StringEquals": {
-                    "ses:FromAddress": "hello@example.com"
+                    "ses:FromAddress": "hello@example.com.com"
                 }
             }
         }
